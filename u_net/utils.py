@@ -8,11 +8,11 @@ def make_img_size(path):
     # print(img.size)
     new = Image.new('RGB',(max_side,max_side),(0,0,0))
     new.paste(img,(0,0))
+    new = new. resize((256,256))
     # new.show()
     return new
 
-
-
+#zhe li jian yi jiang tu pian suo xiao ----->xiao guo hui hao
 #这里构造一个函数---传入地址
 #读取图片
 #取得图片的最长边的大小
@@ -26,4 +26,4 @@ def make_img_size(path):
 
 if __name__ =='__main__':
     img = make_img_size('/home/rpf/nn_learn/u_net/data/VOC2012/JPEGImages/2007_000032.jpg')
-    # print(img.size)
+    print(img.size)
