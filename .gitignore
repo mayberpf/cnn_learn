@@ -1,0 +1,11 @@
+/nn_learn
+*.jpg
+*.png
+*.txt
+*.xml
+*.mp4
+*.pth
+*.idea
+*.__pycache__
+
+
