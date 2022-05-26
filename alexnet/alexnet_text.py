@@ -8,7 +8,7 @@ from torchvision.datasets import ImageFolder
 import os
 
 #地址输入
-TEST_PATH = "/home/rpf/神经网络学习/alexnet/data/test"
+TEST_PATH = "/home/rpf/nn_learn/alexnet/data/test"
 
 
 #将数据转化为tensor格式
@@ -30,7 +30,7 @@ device = 'cuda'if torch.cuda.is_available() else 'cpu'
 model = alexnet().to(device)
 
 #加载模型pt文件
-model.load_state_dict(torch.load(('/home/rpf/神经网络学习/alexnet/save_model/best_model.pth')))
+model.load_state_dict(torch.load(('/home/rpf/nn_learn/alexnet/save_model/best_model.pth')))
 
 classes = [
     '猫',

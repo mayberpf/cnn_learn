@@ -29,7 +29,7 @@ model = myletnet5().to(device)
 # lr_scheduler = lr_scheduler.StepLR(optimizer,step_size=10,gamma=0.1)
 
 #-------------加载模型文件：pth文件------------------#
-model.load_state_dict(torch.load("/home/rpf/神经网络学习/LeNet-5/save_model/best_model.pth"))
+model.load_state_dict(torch.load("/home/rpf/nn_learn/LeNet-5/save_model/best_model.pth"))
 
 #获取结果
 classes = [
