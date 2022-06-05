@@ -9,14 +9,14 @@ import os
 from alexnet import alexnet
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-from tqdm import tqdm
+from tqdm import *
 #这两行代码解决plt图片显示中中文显示的问题
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 
 #写训练测试的文件路径
-TRAIN_PATH = 'E:/神经网络学习/alexnet/data/train'
-VAL_PATH = 'E:/神经网络学习/alexnet/data/val'
+TRAIN_PATH = '/home/rpf/nn_learn/alexnet/data/train'
+VAL_PATH = '/home/rpf/nn_learn/alexnet/data/val'
 
 #图片像素归一化[-1,1]之间
 transform = transforms.Normalize([0.5,0.5,0.5],[0.5,0.5,0.5])
@@ -59,7 +59,11 @@ lr = lr_scheduler.StepLR(optimizer,step_size=10,gamma=0.1)
 def train(d_loader,model,loss_fn,optimizer):
 
     loss,current,n = 0.0,0.0,0
-    for batch,(X,y) in enumerate(d_loader):
+
+    pbar = tqdm(enumerate(d_loader),ncols=50,total=1221,nrows=250)
+    for batch,(X,y) in pbar:
+        pbar.set_description('train')  # 进度条左边显示信息
+        # pbar.set_postfix('train')  # 进度条右边显示信息
         # for i in tqdm(range()):
         #     pass
         img,y = X.to(device),y.to(device)
@@ -84,7 +88,10 @@ def val(dataloader,model,loss_fn):
     model.eval()
     loss,current,n = 0.0,0.0,0
     with torch.no_grad():
-        for idex,(X,y) in enumerate(dataloader):
+        bar = tqdm(enumerate(dataloader),ncols=50,colour='green',total=305)
+        for idex,(X,y) in bar:
+            bar.set_description('val')
+            # bar.set_postfix('val')
             X,y = X.to(device),y.to(device)
             output = model(X)
             cur_loss = loss_fn(output,y)
@@ -125,25 +132,28 @@ train_loss = []
 train_curr = []
 test_loss = []
 test_curr = []
-for i in range(epoch):
-    print("-------------第" + str(i) + "轮----------------")
-    t_loss,t_curr = train(train_loader,model, loss_fn, optimizer)
-    v_loss,v_curr = val(test_loader,model, loss_fn)
-    train_curr.append(t_curr)
-    train_loss.append(t_loss)
-    test_curr.append(v_curr)
-    test_loss.append(v_loss)
+
+with trange(epoch) as t:
+    for i in t:
+        t.set_description('epoch '+str(i))
+        # print("-------------第" + str(i) + "轮----------------")
+        t_loss,t_curr = train(train_loader,model, loss_fn, optimizer)
+        v_loss,v_curr = val(test_loader,model, loss_fn)
+        train_curr.append(t_curr)
+        train_loss.append(t_loss)
+        test_curr.append(v_curr)
+        test_loss.append(v_loss)
 
 
-    if v_curr > max_cur:
-        path = "save_model"
-        if not os.path.exists(path):
-            os.mkdir(path)
-        max_cur = v_curr
-        print("save best model!")
-        torch.save(model.state_dict(), "save_model/best_model.pth")
-    if i ==epoch-1:
-        torch.save(model.state_dict(), "save_model/last_model.pth")
+        if v_curr > max_cur:
+            path = "save_model"
+            if not os.path.exists(path):
+                os.mkdir(path)
+            max_cur = v_curr
+            print("save best model!")
+            torch.save(model.state_dict(), "save_model/best_model.pth")
+        if i ==epoch-1:
+            torch.save(model.state_dict(), "save_model/last_model.pth")
 
 print("done")
 
